@@ -1,5 +1,5 @@
 # MvC2_MusicHandler
- Python app with tinker GUI library to help rename ADX files for MvC2
+ Python app with tkinter GUI library to help rename ADX files for MvC2
 ## Requirements  
  Requires the following python libraries:  
 ```Py
