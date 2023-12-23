@@ -34,4 +34,4 @@ import shutil
 
  This is how the app should appear:  
 
- ![AppPreview](images\md_files\appPreview.png)
+ ![AppPreview](images/md_files/appPreview.png)
