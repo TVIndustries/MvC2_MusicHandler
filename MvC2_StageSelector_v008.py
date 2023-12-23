@@ -199,7 +199,8 @@ def update_track_labels(track_playlist):
 
         dropdown = ttk.Combobox(
             track_list_frame,
-            style="Dark.TCombobox"  # Add this line to use a custom style
+            style="Dark.TCombobox",  # Add this line to use a custom style
+            width=32
         )
         adx_files = ['Choose from ADXs'] + [f for f in os.listdir("ADXs") if f.endswith('.adx')]
         dropdown['values'] = adx_files
