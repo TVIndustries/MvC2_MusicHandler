@@ -35,3 +35,9 @@ import shutil
  This is how the app should appear:  
 
  ![AppPreview](images/md_files/appPreview.png)
+ 
+## Important!
+ When using 32 Shuffle mode make sure to click a stage image to ENSURE NO STAGE IS SELECTED.  
+ If you do not unselect a stage, your changes will not be saved.
+ Read That Again!  
+ 
