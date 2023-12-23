@@ -36,7 +36,6 @@ track_choices = {playlist: {stage: ['Choose from ADXs'] * max_track_amount for s
 
 
 # Function to save the current track choices for the current playlist
-# Function to save the current track choices for the current playlist
 def save_playlist_choices(playlist):
     filename = get_playlist_choices_filename(playlist)
     with open(filename, "w") as file:
@@ -89,34 +88,34 @@ def get_playlist_choices_filename(playlist):
 
 
 # Function to create and center the images
-def create_centered_image(image_path, padding=3):
-    img = Image.open(image_path)
+def create_centered_image(p_image_path, padding=3):
+    img = Image.open(p_image_path)
     img = img.resize((100, 100), Image.LANCZOS)
     photo = ImageTk.PhotoImage(img)
 
-    canvas = tk.Canvas(stage_image_frame, width=106, height=106, bg=dark_mode_bg)
-    canvas.create_image(padding + 2, padding + 2, anchor=tk.NW, image=photo)
-    canvas.image = photo  # Reference to prevent garbage collection
-    canvas.configure(bg=dark_mode_bg, highlightbackground=dark_mode_bg)
-    return canvas
+    image_canvas = tk.Canvas(stage_image_frame, width=106, height=106, bg=dark_mode_bg)
+    image_canvas.create_image(padding + 2, padding + 2, anchor=tk.NW, image=photo)
+    image_canvas.image = photo  # Reference to prevent garbage collection
+    image_canvas.configure(bg=dark_mode_bg, highlightbackground=dark_mode_bg)
+    return image_canvas
 
 
-def on_image_click(stage_name):
+def on_image_click(p_stage_name):
     global current_stage
     track_playlist = track_var.get()  # Get the selected playlist
     if track_playlist != '32 Shuffle':
-        current_stage = stage_name
+        current_stage = p_stage_name
     else:
         current_stage = '32Shuffle'
     track_setting = track_var.get()
     update_track_labels(track_setting)
 
 
-def select_image(stage_name):
+def select_image(p_stage_name):
     global current_stage
     track_playlist = track_var.get()  # Get the selected playlist
     if track_playlist != '32 Shuffle':
-        current_stage = stage_name
+        current_stage = p_stage_name
     else:
         current_stage = '32Shuffle'
     track_setting = track_var.get()
@@ -125,29 +124,26 @@ def select_image(stage_name):
     border_color = "magenta" if track_playlist != '32 Shuffle' else dark_mode_bg
 
     # Change the background color and border color of the selected stage image
-    for canvas, name in stage_canvases:
-        if name == stage_name:
-            canvas.configure(bg=border_color, highlightbackground=border_color)
+    for loop_canvas, name in stage_canvases:
+        if name == p_stage_name:
+            loop_canvas.configure(bg=border_color, highlightbackground=border_color)
         else:
-            canvas.configure(bg=dark_mode_bg, highlightbackground=dark_mode_bg)
+            loop_canvas.configure(bg=dark_mode_bg, highlightbackground=dark_mode_bg)
 
 
 # Function to update the displayed track labels and dropdowns based on the selected playlist
 def update_track_labels(track_playlist):
     global current_stage
 
-    # Initialize stage_choices
-    stage_choices = []
-
-    # Check if the playlist changed from '32 Shuffle'
+    # Check if the playlist changed from 32 Shuffle
     if track_playlist != '32 Shuffle':
         # current_stage = 'STG00'  # Automatically set the current stage to 'STG00'
         # Highlight 'STG00' with magenta background
-        for canvas, name in stage_canvases:
+        for loop_canvas, name in stage_canvases:
             if name == current_stage:
-                canvas.configure(bg="magenta")
+                loop_canvas.configure(bg="magenta")
             else:
-                canvas.configure(bg=dark_mode_bg)
+                loop_canvas.configure(bg=dark_mode_bg)
 
     # Handle 32 Shuffle playlist differently
     if track_playlist == '32 Shuffle':
@@ -161,18 +157,18 @@ def update_track_labels(track_playlist):
         if current_stage == '32Shuffle':
             # Update image selection for the previous '32Shuffle' stage
             current_stage = 'STG00'
-            for canvas, name in stage_canvases:
+            for loop_canvas, name in stage_canvases:
                 if name == current_stage:
-                    canvas.configure(bg="magenta")
+                    loop_canvas.configure(bg="magenta")
                 else:
-                    canvas.configure(bg=dark_mode_bg)
+                    loop_canvas.configure(bg=dark_mode_bg)
 
         if current_stage is not None:
             # Get the selected track amount
             track_amount = track_settings[track_playlist]['TrackAmount']
 
             # Get the stage-specific information
-            stage_info = stage_data_dict[current_stage]
+            # stage_info = stage_data_dict[current_stage]
 
             # Get the choices for the current stage and filter out any "Choose from ADXs" entries
             stage_choices = track_choices[track_playlist][current_stage][:track_amount]
@@ -193,9 +189,9 @@ def update_track_labels(track_playlist):
     track_dropdowns.clear()
 
     # Create new track labels and dropdowns based on the selected playlist and stage
-    for i in range(len(stage_choices)):
-        label = tk.Label(track_list_frame, text=f'Track {i + 1}:', fg=dark_mode_fg, bg=dark_mode_bg)
-        label.grid(row=i % 16, column=(i // 16) * 2, padx=10, pady=5, sticky='w')
+    for loop_i in range(len(stage_choices)):
+        label = tk.Label(track_list_frame, text=f'Track {loop_i + 1}:', fg=dark_mode_fg, bg=dark_mode_bg)
+        label.grid(row=loop_i % 16, column=(loop_i // 16) * 2, padx=10, pady=5, sticky='w')
 
         dropdown = ttk.Combobox(
             track_list_frame,
@@ -204,8 +200,8 @@ def update_track_labels(track_playlist):
         )
         adx_files = ['Choose from ADXs'] + [f for f in os.listdir("ADXs") if f.endswith('.adx')]
         dropdown['values'] = adx_files
-        dropdown.set(stage_choices[i])
-        dropdown.grid(row=i % 16, column=(i // 16) * 2 + 1, padx=10, pady=5, sticky='w')
+        dropdown.set(stage_choices[loop_i])
+        dropdown.grid(row=loop_i % 16, column=(loop_i // 16) * 2 + 1, padx=10, pady=5, sticky='w')
         track_labels.append(label)
         track_dropdowns.append(dropdown)
 
@@ -221,6 +217,8 @@ def save_track_choices():
 
 
 def on_playlist_change(event):
+    if not event:
+        print('No event?')
     global stage_name
     global gbl_track_amount
     gbl_track_amount = track_settings[playlist]['TrackAmount']
@@ -228,6 +226,8 @@ def on_playlist_change(event):
     selected_playlist = track_var.get()
     if playlist != '32 Shuffle':
         stage_name = 'STG00'
+    else:
+        stage_name = '32Shuffle'
     # Update the track labels and dropdowns for the selected playlist
     update_track_labels(selected_playlist)
 
@@ -292,18 +292,18 @@ for playlist in track_settings:
 # Function to export the track files
 def export_tracks():
     global track_choices  # Use the global variable
-
+    global stage_name
     selected_playlist = track_var.get()
 
     if selected_playlist == '32 Shuffle':
         stage_name = '32Shuffle'
         output_dir = f"Output/{selected_playlist}"
         os.makedirs(output_dir, exist_ok=True)
-        for i in range(32):
-            track_choice = track_choices[selected_playlist][stage_name][i]
+        for loop_i in range(32):
+            track_choice = track_choices[selected_playlist][stage_name][loop_i]
             if track_choice != 'Choose from ADXs':
                 src_file = f"ADXs/{track_choice}"
-                dst_file = ("ADX_S%02X" % i) + '0.BIN'
+                dst_file = ("ADX_S%02X" % loop_i) + '0.BIN'
                 dst_file_path = os.path.join(output_dir, dst_file)
                 print(dst_file, f"{track_choice}")
                 shutil.copy(src_file, dst_file_path)
@@ -312,15 +312,15 @@ def export_tracks():
             output_dir = f"Output/{selected_playlist}"
             os.makedirs(output_dir, exist_ok=True)
             stage_choices = track_choices[selected_playlist][stage_name]  # Change the variable name to avoid shadowing
-            for i, track_choice in enumerate(stage_choices):
+            for loop_i, track_choice in enumerate(stage_choices):
                 if track_choice != 'Choose from ADXs':
                     src_file = f"ADXs/{track_choice}"
                     track_fmt = stage_data_dict[stage_name]['TrackFmt']
-                    if i == 0:
-                        midstring = '_'
+                    if loop_i == 0:
+                        mid_string = '_'
                     else:
-                        midstring = '%1X' % i
-                    track_out = track_fmt % midstring
+                        mid_string = '%1X' % loop_i
+                    track_out = track_fmt % mid_string
                     dst_file = f"{track_out}.BIN"
                     dst_file_path = os.path.join(output_dir, dst_file)
                     print(dst_file, f"{track_choice}")
